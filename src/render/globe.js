@@ -66,33 +66,64 @@ export class GlobeRenderer {
     return { x: this.cx + this.R * x, y: this.cy - this.R * y, visible: cosc >= -0.02, cosc };
   }
 
-  // ---- Eingabe: Drag zum Drehen, Wheel/Pinch zum Zoomen, Klick zum Wählen ----
+  // ---- Eingabe: 1 Finger/Maus = drehen, 2 Finger = Pinch-Zoom, Wheel = Zoom ----
   _bindInput() {
     const c = this.canvas;
+    this._ptrs = new Map();      // pointerId -> {x,y}
+    this._moved = 0;
+    this._pinchDist = 0;
+
     c.addEventListener('pointerdown', (e) => {
-      this._drag = { x: e.clientX, y: e.clientY, moved: 0 };
+      this._ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
       this.cam.autoRotate = false;
-      c.setPointerCapture(e.pointerId);
+      this._moved = 0;
+      if (this._ptrs.size === 2) this._pinchDist = this._twoFingerDist();
+      try { c.setPointerCapture(e.pointerId); } catch {}
     });
+
     c.addEventListener('pointermove', (e) => {
-      if (!this._drag) return;
-      const dx = e.clientX - this._drag.x, dy = e.clientY - this._drag.y;
-      this._drag.moved += Math.abs(dx) + Math.abs(dy);
-      const k = 0.25 / this.cam.zoom;
-      this.cam.lon0 -= dx * k;
-      this.cam.lat0 = Math.max(-85, Math.min(85, this.cam.lat0 + dy * k));
-      this.cam.follow = null;
-      this._drag.x = e.clientX; this._drag.y = e.clientY;
+      const prev = this._ptrs.get(e.pointerId);
+      if (!prev) return;
+      const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
+      this._ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      this._moved += Math.abs(dx) + Math.abs(dy);
+
+      if (this._ptrs.size >= 2) {
+        // Pinch-to-Zoom
+        const d = this._twoFingerDist();
+        if (this._pinchDist > 0) {
+          this.cam.targetZoom = Math.max(1, Math.min(60, this.cam.targetZoom * (d / this._pinchDist)));
+        }
+        this._pinchDist = d;
+      } else {
+        // Drehen
+        const k = 0.25 / this.cam.zoom;
+        this.cam.lon0 -= dx * k;
+        this.cam.lat0 = Math.max(-85, Math.min(85, this.cam.lat0 + dy * k));
+        this.cam.follow = null;
+      }
     });
-    c.addEventListener('pointerup', (e) => {
-      if (this._drag && this._drag.moved < 6) this._pick(e.clientX, e.clientY);
-      this._drag = null;
-    });
+
+    const end = (e) => {
+      const wasOne = this._ptrs.size === 1;
+      this._ptrs.delete(e.pointerId);
+      if (wasOne && this._moved < 8) this._pick(e.clientX, e.clientY);
+      if (this._ptrs.size < 2) this._pinchDist = 0;
+    };
+    c.addEventListener('pointerup', end);
+    c.addEventListener('pointercancel', end);
+
     c.addEventListener('wheel', (e) => {
       e.preventDefault();
       const f = Math.exp(-e.deltaY * 0.0015);
       this.cam.targetZoom = Math.max(1, Math.min(60, this.cam.targetZoom * f));
     }, { passive: false });
+  }
+
+  _twoFingerDist() {
+    const p = [...this._ptrs.values()];
+    if (p.length < 2) return 0;
+    return Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
   }
 
   zoomBy(f) { this.cam.targetZoom = Math.max(1, Math.min(60, this.cam.targetZoom * f)); }
