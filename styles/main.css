@@ -185,4 +185,31 @@ button.mini{padding:4px 8px;border-radius:7px;border:1px solid var(--line);backg
   background:rgba(255,255,255,0.05);color:var(--txt);font-size:13px}
 
 #hint{position:fixed;left:100px;bottom:14px;font-size:11px;color:var(--muted);z-index:2;max-width:40vw}
-@media(max-width:820px){#hint{display:none}#panel{max-width:92vw;width:92vw}#nav{width:64px}}
+/* ---- Mobile: Navigation als untere Tableiste, Panel darüber ---- */
+@media(max-width:820px){
+  #hint{display:none}
+  #topbar{gap:10px;overflow-x:auto;white-space:nowrap}
+  .brand .sub{display:none}
+  #ticker{font-size:11px}
+  /* Navigation nach unten, horizontal */
+  #nav{
+    top:auto;bottom:0;left:0;right:0;width:100%;
+    flex-direction:row;gap:0;justify-content:space-around;
+    background:var(--glass);border-top:1px solid var(--line);
+    border-radius:0;padding:4px 2px;z-index:6;backdrop-filter:blur(10px);
+  }
+  #nav button{flex:1;border:none;border-radius:8px;font-size:9px;padding:5px 2px;background:transparent;color:var(--muted)}
+  #nav button span{font-size:19px}
+  #nav button.on{background:rgba(91,214,255,0.16);color:var(--accent)}
+  /* Panel füllt die Breite, lässt aber oben Topbar/Ticker und unten die Tableiste frei */
+  #panel{
+    left:8px;right:8px;top:84px;bottom:70px;width:auto;max-width:none;
+    z-index:3;padding:14px;
+  }
+  /* Zoom-Buttons über die Tableiste heben */
+  #zoomctl{bottom:80px;right:10px;z-index:4}
+  #toasts{bottom:78px}
+  .fleetwrap{grid-template-columns:1fr}
+  .cards{grid-template-columns:1fr 1fr}
+  .upgrades{grid-template-columns:1fr}
+}
