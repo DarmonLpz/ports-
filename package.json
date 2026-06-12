@@ -1,0 +1,11 @@
+{
+  "name": "oceanum",
+  "version": "0.1.0",
+  "description": "OCEANUM – Welthandels-Wirtschaftssimulation mit animiertem Globus, Schiffsrouting, Börse und Ereignissen.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "check": "for f in $(find src server.js -name '*.js'); do node --check \"$f\" || exit 1; done && echo OK"
+  },
+  "engines": { "node": ">=18" }
+}
