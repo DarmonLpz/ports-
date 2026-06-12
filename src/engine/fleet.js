@@ -8,6 +8,7 @@ import { PORTS, PORTS_BY_ID } from '../data/ports.js';
 import { gcDistance, gcInterpolate } from './util.js';
 
 let SHIP_SEQ = 1;
+export function setShipSeq(n) { SHIP_SEQ = Math.max(SHIP_SEQ, n); }
 
 export class Ship {
   constructor(classId, owner, name, atPortId) {

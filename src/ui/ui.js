@@ -9,14 +9,27 @@ import { SHIP_CLASSES, UPGRADES, UPGRADE_BY_ID } from '../data/ships.js';
 import { gcDistance } from '../engine/util.js';
 import { shipProfileSVG } from '../render/shipart.js';
 import { portSceneSVG } from '../render/portart.js';
+import { photoOverlayHTML } from '../render/assets.js';
+import { flagEmoji } from '../data/countries.js';
 
 const STATUS = { idle: 'im Hafen', enroute: 'auf See', nofuel: 'Treibstoff leer!', repair: 'Werft' };
 
+const TUTORIAL = [
+  { icon: '🌍', title: 'Willkommen bei OCEANUM', body: 'Du leitest ein globales Handelsimperium. Im Zentrum dreht sich die Erde mit Tag-/Nacht-Zyklus – darauf siehst du alle Schiffe entlang exakter Seerouten fahren.' },
+  { icon: '🖱️', title: 'Globus steuern', body: 'Ziehen dreht den Globus, das <b>Mausrad zoomt</b> stufenlos bis dicht an ein Schiff. Klicke einen Hafen oder ein Schiff an, um es auszuwählen. Mit <b>🎯</b> folgt die Kamera einem Schiff.' },
+  { icon: '🚢', title: 'Handeln', body: 'Im Reiter <b>Flotte</b> wählst du ein Schiff im Hafen, <b>lädst</b> eine günstige Ware und wählst das <b>profitabelste Ziel</b>. Mit „Auslaufen“ startet die Reise – bei Ankunft wird automatisch verkauft.' },
+  { icon: '⛽', title: 'Betrieb', body: 'Schiffe verbrauchen Treibstoff (am <b>Ölpreis</b> gekoppelt) und nutzen sich ab. <b>Bunkern</b>, <b>Reparieren</b> und <b>Upgrades</b> findest du in der Schiffsansicht.' },
+  { icon: '🏗️', title: 'Märkte & Beteiligungen', body: 'In <b>Märkte</b> kaufst du Hafenanteile, baust Häfen aus und errichtest <b>Industrie- & Rohstoffkomplexe</b>, die Waren produzieren und Ertrag abwerfen.' },
+  { icon: '🏛️', title: 'Börse & Übernahmen', body: 'An der <b>Börse</b> handelst du Aktien von Reedereien und Konzernen. Ab <b>50 % Anteil</b> übernimmst du ein Unternehmen – Reedereiflotten und Kasse gehen an dich über.' },
+  { icon: '🌪️', title: 'Weltgeschehen', body: 'Kriege, Sanktionen, Epidemien, Ölschocks und Kanalsperren verschieben Preise und Routen. Beobachte die Laufschrift und nutze Verwerfungen für Gewinne. Viel Erfolg!' },
+];
+
 export class UI {
-  constructor(state, globe, root) {
+  constructor(state, globe, root, app = {}) {
     this.state = state;
     this.globe = globe;
     this.root = root;
+    this.app = app;
     this.tab = 'dash';
     this.activeShipId = null;
     this.portRegionFilter = 'all';
@@ -35,6 +48,12 @@ export class UI {
         <div class="stat"><label>Vermögen</label><span id="t-net">–</span></div>
         <div class="stat"><label>Ölpreis</label><span id="t-oil">–</span></div>
         <div class="spacer"></div>
+        <div class="menu">
+          <button data-act="tutorial" title="Tutorial">❓</button>
+          <button data-act="save" title="Speichern">💾</button>
+          <button data-act="load" title="Laden">📂</button>
+          <button data-act="newgame" title="Neues Spiel">🆕</button>
+        </div>
         <div class="speed">
           <button data-act="speed" data-v="0" title="Pause">⏸</button>
           <button data-act="speed" data-v="1" class="on">▶</button>
@@ -101,7 +120,52 @@ export class UI {
       case 'buyshares': { this._toast(s.buyShares(el.dataset.id, +el.dataset.qty)); this.renderTab(); break; }
       case 'sellshares': { this._toast(s.sellShares(el.dataset.id, +el.dataset.qty)); this.renderTab(); break; }
       case 'regionfilter': this.portRegionFilter = el.dataset.r; this.renderTab(); break;
+      case 'save': this._toast({ ok: this.app.onSave?.(), msg: this.app.onSave ? 'Spielstand gespeichert.' : '' }); break;
+      case 'load': this.app.onLoad?.(); break;
+      case 'newgame': if (confirm('Neues Spiel starten? Ungespeicherter Fortschritt geht verloren.')) this.app.onNew?.(); break;
+      case 'tutorial': this.showTutorial(); break;
+      case 'tut-next': this._tutStep(+el.dataset.dir); break;
+      case 'tut-close': this._closeTutorial(); break;
     }
+  }
+
+  setState(state) {
+    this.state = state;
+    this.activeShipId = null;
+    this.dest = {};
+    this._openPortId = null;
+    globalThis.requestAnimationFrame(() => { this.renderTab(); this.tickUI(performance.now()); });
+  }
+
+  // ---------- Tutorial ----------
+  showTutorial() {
+    this._tut = 0;
+    if (!this._tutEl) {
+      this._tutEl = document.createElement('div');
+      this._tutEl.id = 'tutorial';
+      this.root.appendChild(this._tutEl);
+    }
+    this._renderTutorial();
+  }
+  _closeTutorial() { if (this._tutEl) { this._tutEl.remove(); this._tutEl = null; } try { localStorage.setItem('oceanum_tut_done', '1'); } catch {} }
+  _tutStep(dir) {
+    this._tut = Math.max(0, Math.min(TUTORIAL.length - 1, this._tut + dir));
+    this._renderTutorial();
+  }
+  _renderTutorial() {
+    const t = TUTORIAL[this._tut];
+    const last = this._tut === TUTORIAL.length - 1;
+    this._tutEl.innerHTML = `<div class="tut-card">
+      <div class="tut-emoji">${t.icon}</div>
+      <h3>${t.title}</h3>
+      <p>${t.body}</p>
+      <div class="tut-dots">${TUTORIAL.map((_, i) => `<i class="${i === this._tut ? 'on' : ''}"></i>`).join('')}</div>
+      <div class="tut-btns">
+        <button data-act="tut-close">Überspringen</button>
+        ${this._tut > 0 ? '<button data-act="tut-next" data-dir="-1">Zurück</button>' : ''}
+        <button data-act="${last ? 'tut-close' : 'tut-next'}" data-dir="1" class="primary">${last ? 'Los geht\'s!' : 'Weiter'}</button>
+      </div>
+    </div>`;
   }
 
   _onChange(e) {
@@ -359,7 +423,7 @@ export class UI {
     const list = shown.map(p => {
       const stake = s.assets.portStakes[p.id]?.stake ?? 0;
       return `<button class="portrow ${open&&p.id===open.id?'on':''}" data-act="openport" data-id="${p.id}">
-        <b>${p.name}</b><small>${p.country}${stake>0?` · ${(stake*100).toFixed(0)}% Anteil`:''}</small></button>`;
+        <b>${flagEmoji(p.country)} ${p.name}</b><small>${p.country}${stake>0?` · ${(stake*100).toFixed(0)}% Anteil`:''}</small></button>`;
     }).join('');
     return `<h2>Märkte & Häfen</h2>
       <div class="chips">${tabs}</div>
@@ -392,8 +456,8 @@ export class UI {
     const cxsel = this._cxSel && buildable.includes(this._cxSel) ? this._cxSel : buildable[0];
     const myCx = s.assets.complexes.filter(c => c.portId === port.id);
     return `
-      <div class="portscene">${portSceneSVG(port)}</div>
-      <h3>${port.name} <small>${REGIONS[port.region]}</small></h3>
+      <div class="portscene">${portSceneSVG(port)}${photoOverlayHTML(port.id)}</div>
+      <h3>${flagEmoji(port.country)} ${port.name} <small>${port.country} · ${REGIONS[port.region]}</small></h3>
       <div class="kv">
         <span>Anteil <b>${stake?(stake.stake*100).toFixed(0):0}%</b></span>
         <span>Ausbaustufe <b>${stake?.level ?? 1}</b></span>

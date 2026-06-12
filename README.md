@@ -55,6 +55,31 @@ werden, nicht per `file://`.)
    Komplexe) und **Börse** (Anteile bis zur Übernahme) reinvestieren.
 5. **Ereignisse** beobachten und Preisverwerfungen ausnutzen.
 
+## Speichern, Tutorial & Steuer-Menü
+
+Oben rechts: **❓ Tutorial**, **💾 Speichern**, **📂 Laden**, **🆕 Neues Spiel**.
+Der Spielstand wird zusätzlich **alle 20 s automatisch** und beim Schließen in
+`localStorage` gesichert; beim nächsten Start wird er automatisch geladen. Das
+**Tutorial** (7 Schritte) erscheint beim ersten Start automatisch.
+
+## Echte Bilder: Asset-Pipeline
+
+Das Spiel läuft komplett offline mit prozeduralen Grafiken. Online werden
+zusätzlich **echte Bilder** eingeblendet:
+
+- **Flaggen** aller Hafenländer (Emoji offline; Raster über flagcdn.com online).
+- **Hafenfotos** aus *Wikimedia Commons* über ein Manifest. Erzeugen/aktualisieren:
+
+  ```bash
+  node tools/fetch-assets.mjs      # schreibt assets/manifest.json (benötigt Internet)
+  ```
+
+  Das Manifest enthält nur **URLs + Attribution** (keine Binärdateien im Repo);
+  Bilder werden zur Laufzeit von `upload.wikimedia.org` nachgeladen und mit einem
+  sanften Crossfade über die prozedurale Hafenszene gelegt. Fehlt ein Bild oder
+  bist du offline, bleibt die prozedurale Szene sichtbar. (Aktuell sind für einen
+  Teil der Häfen Fotos hinterlegt; ein erneuter Lauf des Skripts ergänzt weitere.)
+
 ## Architektur
 
 ```

@@ -1,0 +1,202 @@
+{
+  "generatedAt": "2026-06-12T22:57:11.435Z",
+  "source": "Wikimedia Commons",
+  "ports": {
+    "shanghai": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Pier_in_the_Town_of_Hankou%2C_Hubei_Province%2C_China%2C_1874_WDL2108.png/960px-Pier_in_the_Town_of_Hankou%2C_Hubei_Province%2C_China%2C_1874_WDL2108.png",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/1/15/Pier_in_the_Town_of_Hankou%2C_Hubei_Province%2C_China%2C_1874_WDL2108.png",
+      "title": "Pier in the Town of Hankou, Hubei Province, China, 1874",
+      "attribution": "Adolf Nikolay Boyarsky",
+      "license": "Public domain"
+    },
+    "ningbo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Parsifal%2C_Fremantle%2C_2015_%2802%29.JPG/960px-Parsifal%2C_Fremantle%2C_2015_%2802%29.JPG",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Parsifal%2C_Fremantle%2C_2015_%2802%29.JPG",
+      "title": "Parsifal, Fremantle, 2015 (02)",
+      "attribution": "Bahnfrend",
+      "license": "CC BY-SA 4.0"
+    },
+    "hongkong": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Vancouver_%28BC%2C_Canada%29%2C_Vancouver_Centerm_Terminal_--_2022_--_2151.jpg/960px-Vancouver_%28BC%2C_Canada%29%2C_Vancouver_Centerm_Terminal_--_2022_--_2151.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Vancouver_%28BC%2C_Canada%29%2C_Vancouver_Centerm_Terminal_--_2022_--_2151.jpg",
+      "title": "Vancouver (BC, Canada), Vancouver Centerm Terminal -- 2022 -- 2151",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    },
+    "qingdao": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Maersk_Line_-_panoramio.jpg/960px-Maersk_Line_-_panoramio.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Maersk_Line_-_panoramio.jpg",
+      "title": "Maersk Line - panoramio",
+      "attribution": "---=XEON=---",
+      "license": "CC BY 3.0"
+    },
+    "yokohama": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/The_War_in_Japan_-_ILN_1864.jpg/960px-The_War_in_Japan_-_ILN_1864.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/6/62/The_War_in_Japan_-_ILN_1864.jpg",
+      "title": "The War in Japan",
+      "attribution": "Frederick James Smyth / Edwin Weedon",
+      "license": "Public domain"
+    },
+    "kaohsiung": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Shipping-container_Kaohsiung_Harbour.jpg/960px-Shipping-container_Kaohsiung_Harbour.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Shipping-container_Kaohsiung_Harbour.jpg",
+      "title": "Shipping-container Kaohsiung Harbour",
+      "attribution": "tommy.lan from flickr",
+      "license": "CC BY-SA 2.0"
+    },
+    "tianjin": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/VTSTower.jpg/960px-VTSTower.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/3/32/VTSTower.jpg",
+      "title": "VTSTower",
+      "attribution": "Arrorro",
+      "license": "CC BY-SA 3.0"
+    },
+    "singapore": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Maersk_Shipper_-_panoramio.jpg/960px-Maersk_Shipper_-_panoramio.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Maersk_Shipper_-_panoramio.jpg",
+      "title": "Maersk Shipper - panoramio",
+      "attribution": "---=XEON=---",
+      "license": "CC BY 3.0"
+    },
+    "portklang": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/090301.020.PortKlang.jpg/960px-090301.020.PortKlang.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/0/0d/090301.020.PortKlang.jpg",
+      "title": "090301.020.PortKlang",
+      "attribution": "jgmorard",
+      "license": "CC BY 2.0"
+    },
+    "laemchabang": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Thung_Suk_La%2C_Si_Racha_District%2C_Chon_Buri%2C_Thailand_-_panoramio_%2815%29.jpg/960px-Thung_Suk_La%2C_Si_Racha_District%2C_Chon_Buri%2C_Thailand_-_panoramio_%2815%29.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Thung_Suk_La%2C_Si_Racha_District%2C_Chon_Buri%2C_Thailand_-_panoramio_%2815%29.jpg",
+      "title": "Thung Suk La, Si Racha District, Chon Buri, Thailand - panoramio (15)",
+      "attribution": "Mozhar",
+      "license": "CC BY-SA 3.0"
+    },
+    "colombo": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/ColomboHarbour-SriLanka.JPG/960px-ColomboHarbour-SriLanka.JPG",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/7/7d/ColomboHarbour-SriLanka.JPG",
+      "title": "ColomboHarbour-SriLanka",
+      "attribution": "Rehman Abubakr",
+      "license": "CC BY-SA 4.0"
+    },
+    "piraeus": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Apollon_%28ship%29._Nomikos_Rhodos_096.jpg/960px-Apollon_%28ship%29._Nomikos_Rhodos_096.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Apollon_%28ship%29._Nomikos_Rhodos_096.jpg",
+      "title": "Apollon (ship). Nomikos Rhodos 096",
+      "attribution": "Paebi Fotograf: Walter Baur",
+      "license": "CC BY-SA 4.0"
+    },
+    "genoa": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Embarque_de_imigrantes_su%C3%AD%C3%A7os_no_Porto_de_G%C3%AAnova.jpg/960px-Embarque_de_imigrantes_su%C3%AD%C3%A7os_no_Porto_de_G%C3%AAnova.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/1/12/Embarque_de_imigrantes_su%C3%AD%C3%A7os_no_Porto_de_G%C3%AAnova.jpg",
+      "title": "Embarque de imigrantes suíços no Porto de Gênova",
+      "attribution": "Unknown authorUnknown author",
+      "license": "Public domain"
+    },
+    "rotterdam": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Rotterdam_Oudehaven_4.jpg/960px-Rotterdam_Oudehaven_4.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Rotterdam_Oudehaven_4.jpg",
+      "title": "Rotterdam Oudehaven 4",
+      "attribution": "Zairon",
+      "license": "CC BY-SA 4.0"
+    },
+    "hamburg": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Hamburg%2C_Hafen_--_2010_--_3037.jpg/960px-Hamburg%2C_Hafen_--_2010_--_3037.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/8/82/Hamburg%2C_Hafen_--_2010_--_3037.jpg",
+      "title": "Hamburg, Hafen -- 2010 -- 3037",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    },
+    "bremerhaven": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bremerhaven%2C_Schulschiff_%22Deutschland%22_--_2024_--_2202.jpg/960px-Bremerhaven%2C_Schulschiff_%22Deutschland%22_--_2024_--_2202.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/2/28/Bremerhaven%2C_Schulschiff_%22Deutschland%22_--_2024_--_2202.jpg",
+      "title": "Bremerhaven, Schulschiff \"Deutschland\" -- 2024 -- 2202",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    },
+    "gothenburg": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/AIDAcara_G%C3%B6teborg_%28Matthias_Schalk%29.jpg/960px-AIDAcara_G%C3%B6teborg_%28Matthias_Schalk%29.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/5/5b/AIDAcara_G%C3%B6teborg_%28Matthias_Schalk%29.jpg",
+      "title": "AIDAcara Göteborg (Matthias Schalk)",
+      "attribution": "Matthias Schalk",
+      "license": "CC BY-SA 4.0"
+    },
+    "stpetersburg": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Claude_Lorrain_009.jpg/960px-Claude_Lorrain_009.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/f/fb/Claude_Lorrain_009.jpg",
+      "title": "Hafen beim Sonnenuntergang",
+      "attribution": "Claude Lorrain",
+      "license": "Public domain"
+    },
+    "losangeles": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Castries_Cruise_Port_%2824222002002%29.jpg/960px-Castries_Cruise_Port_%2824222002002%29.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/4/40/Castries_Cruise_Port_%2824222002002%29.jpg",
+      "title": "Castries Cruise Port (24222002002)",
+      "attribution": "Prayitno / Thank you for (12 millions +) view from Los Angeles, USA",
+      "license": "CC BY 2.0"
+    },
+    "longbeach": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Aerial_photograph_of_the_Port_of_Miami_Container_Port.jpg/960px-Aerial_photograph_of_the_Port_of_Miami_Container_Port.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/5/52/Aerial_photograph_of_the_Port_of_Miami_Container_Port.jpg",
+      "title": "Aerial photograph of the Port of Miami Container Port",
+      "attribution": "James R. Tourtellotte",
+      "license": "Public domain"
+    },
+    "newyork": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/New_York_City_%28New_York%2C_USA%29%2C_Manhattan%2C_Skyline_--_2012_--_6641.jpg/960px-New_York_City_%28New_York%2C_USA%29%2C_Manhattan%2C_Skyline_--_2012_--_6641.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/9/9d/New_York_City_%28New_York%2C_USA%29%2C_Manhattan%2C_Skyline_--_2012_--_6641.jpg",
+      "title": "New York City (New York, USA), Manhattan, Skyline -- 2012 -- 6641",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    },
+    "houston": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/James_Robertson_-_Port_of_Balaclava_Harbour_-_Google_Art_Project.jpg/960px-James_Robertson_-_Port_of_Balaclava_Harbour_-_Google_Art_Project.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/a/ac/James_Robertson_-_Port_of_Balaclava_Harbour_-_Google_Art_Project.jpg",
+      "title": "Port of Balaclava Harbour",
+      "attribution": "James Robertson",
+      "license": "Public domain"
+    },
+    "callao": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/A_silhouetted_view_of_a_Peruvian_naval_ship_moored_in_the_port_of_Callao_during_Operation_UNITAS_XXV_-_DPLA_-_7332a973a1cde8aee5c42c00b150023b.jpeg/960px-A_silhouetted_view_of_a_Peruvian_naval_ship_moored_in_the_port_of_Callao_during_Operation_UNITAS_XXV_-_DPLA_-_7332a973a1cde8aee5c42c00b150023b.jpeg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/6/68/A_silhouetted_view_of_a_Peruvian_naval_ship_moored_in_the_port_of_Callao_during_Operation_UNITAS_XXV_-_DPLA_-_7332a973a1cde8aee5c42c00b150023b.jpeg",
+      "title": "A silhouetted view of a Peruvian naval ship moored in the port of Callao during Operation UNITAS XXV",
+      "attribution": "Department of Defense. American Forces Information Service. Defense Visual Information Center. 1994",
+      "license": "Public domain"
+    },
+    "valparaiso": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Chile06.JPG/960px-Chile06.JPG",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Chile06.JPG",
+      "title": "Chile06",
+      "attribution": "Travellers &amp; Tinkers",
+      "license": "CC BY-SA 3.0"
+    },
+    "lagos": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Apapa_port.lagos.jpg/960px-Apapa_port.lagos.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/7/73/Apapa_port.lagos.jpg",
+      "title": "Apapa port.lagos",
+      "attribution": "Quadrex24",
+      "license": "CC BY-SA 4.0"
+    },
+    "alexandria": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Alexandria_of_Egypt-_General_view_%28SM_stf547%29.png/960px-Alexandria_of_Egypt-_General_view_%28SM_stf547%29.png",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Alexandria_of_Egypt-_General_view_%28SM_stf547%29.png",
+      "title": "Alexandria of Egypt: General view",
+      "attribution": "Hammerschmidt, Wilhelm\n\nWilhelm Hammerschmidt (Q21031888)",
+      "license": "PDM-owner"
+    },
+    "sydney": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Sydney_%28AU%29%2C_Darling_Harbour_--_2019_--_3173-5.jpg/960px-Sydney_%28AU%29%2C_Darling_Harbour_--_2019_--_3173-5.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/8/87/Sydney_%28AU%29%2C_Darling_Harbour_--_2019_--_3173-5.jpg",
+      "title": "Sydney (AU), Darling Harbour -- 2019 -- 3173-5",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    },
+    "melbourne": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Melbourne_%28AU%29%2C_View_from_St_Kilda_Pier_--_2019_--_1593.jpg/960px-Melbourne_%28AU%29%2C_View_from_St_Kilda_Pier_--_2019_--_1593.jpg",
+      "full": "https://upload.wikimedia.org/wikipedia/commons/5/53/Melbourne_%28AU%29%2C_View_from_St_Kilda_Pier_--_2019_--_1593.jpg",
+      "title": "Melbourne (AU), View from St Kilda Pier -- 2019 -- 1593",
+      "attribution": "Dietmar Rabich",
+      "license": "CC BY-SA 4.0"
+    }
+  }
+}
