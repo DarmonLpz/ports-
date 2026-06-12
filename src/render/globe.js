@@ -20,6 +20,7 @@ export class GlobeRenderer {
     this.ctx = canvas.getContext('2d');
     this.cam = { lon0: 10, lat0: 18, zoom: 1, targetZoom: 1, follow: null, autoRotate: true };
     this.dpr = Math.min(2, window.devicePixelRatio || 1);
+    this.centerYFrac = 0.5;   // vertikale Globusmitte (auf Mobil nach oben geschoben)
     this.selected = null;
     this.onSelect = null;
     this._drag = null;
@@ -51,10 +52,16 @@ export class GlobeRenderer {
     return pts;
   }
 
-  get baseR() { return Math.min(this.W, this.H) * 0.42; }
+  get baseR() {
+    // Auf Mobilgeräten den Radius an den sichtbaren oberen Bereich koppeln.
+    const ref = this.centerYFrac < 0.45 ? Math.min(this.W, this.H * 2 * this.centerYFrac) : Math.min(this.W, this.H);
+    return ref * 0.42;
+  }
   get R() { return this.baseR * this.cam.zoom; }
   get cx() { return this.W / 2; }
-  get cy() { return this.H / 2; }
+  get cy() { return this.H * this.centerYFrac; }
+
+  setLayout(mobile) { this.centerYFrac = mobile ? 0.27 : 0.5; }
 
   project(lat, lon) {
     const φ = lat * DEG, λ = lon * DEG;

@@ -17,6 +17,13 @@ function newState() {
 const canvas = document.getElementById('globe');
 const globe = new GlobeRenderer(canvas);
 
+// Layout an Bildschirmgröße koppeln (Globus auf Mobil in den oberen Bereich)
+const mq = window.matchMedia('(max-width: 820px)');
+const applyLayout = () => globe.setLayout(mq.matches);
+applyLayout();
+mq.addEventListener?.('change', applyLayout);
+window.addEventListener('orientationchange', () => setTimeout(applyLayout, 200));
+
 const app = {
   onSave() { return saveToStorage(state); },
   onLoad() {

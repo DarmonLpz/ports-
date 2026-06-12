@@ -185,31 +185,55 @@ button.mini{padding:4px 8px;border-radius:7px;border:1px solid var(--line);backg
   background:rgba(255,255,255,0.05);color:var(--txt);font-size:13px}
 
 #hint{position:fixed;left:100px;bottom:14px;font-size:11px;color:var(--muted);z-index:2;max-width:40vw}
-/* ---- Mobile: Navigation als untere Tableiste, Panel darüber ---- */
+/* ---- Mobile: Globus oben, Panel als Bottom-Sheet, Navigation als Tableiste ---- */
 @media(max-width:820px){
   #hint{display:none}
-  #topbar{gap:10px;overflow-x:auto;white-space:nowrap}
+  /* Kompakte, scrollbare Topbar – nichts wird abgeschnitten */
+  #topbar{gap:9px;padding:0 10px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  #topbar::-webkit-scrollbar{display:none}
+  .brand b{font-size:14px}
   .brand .sub{display:none}
-  #ticker{font-size:11px}
-  /* Navigation nach unten, horizontal */
+  #topbar .stat label{font-size:8px}
+  #topbar .stat span{font-size:13px}
+  .menu{margin-right:4px}
+  .menu button,.speed button{width:30px;height:30px;font-size:13px;flex:0 0 auto}
+  #ticker{height:22px;font-size:11px}
+
+  /* Navigation nach unten als Tableiste */
   #nav{
     top:auto;bottom:0;left:0;right:0;width:100%;
     flex-direction:row;gap:0;justify-content:space-around;
-    background:var(--glass);border-top:1px solid var(--line);
-    border-radius:0;padding:4px 2px;z-index:6;backdrop-filter:blur(10px);
+    background:var(--glass);border:none;border-top:1px solid var(--line);
+    border-radius:0;padding:4px 2px;z-index:6;backdrop-filter:blur(12px);
   }
   #nav button{flex:1;border:none;border-radius:8px;font-size:9px;padding:5px 2px;background:transparent;color:var(--muted)}
   #nav button span{font-size:19px}
   #nav button.on{background:rgba(91,214,255,0.16);color:var(--accent)}
-  /* Panel füllt die Breite, lässt aber oben Topbar/Ticker und unten die Tableiste frei */
+
+  /* Panel als Bottom-Sheet: untere Hälfte, Globus bleibt oben sichtbar */
   #panel{
-    left:8px;right:8px;top:84px;bottom:70px;width:auto;max-width:none;
-    z-index:3;padding:14px;
+    left:0;right:0;bottom:54px;top:auto;height:55vh;width:auto;max-width:none;
+    border-radius:18px 18px 0 0;padding:20px 14px 16px;z-index:3;
+    box-shadow:0 -10px 40px rgba(0,0,0,0.5);
   }
-  /* Zoom-Buttons über die Tableiste heben */
-  #zoomctl{bottom:80px;right:10px;z-index:4}
-  #toasts{bottom:78px}
+  #panel::before{content:"";position:absolute;top:7px;left:50%;transform:translateX(-50%);
+    width:42px;height:4px;border-radius:3px;background:rgba(255,255,255,0.28)}
+  #panel h2{font-size:18px;margin-top:0}
+
+  /* Zoom-Buttons in den sichtbaren Globusbereich (oben rechts) */
+  #zoomctl{top:84px;bottom:auto;right:10px;flex-direction:column;z-index:4}
+  #zoomctl button{width:38px;height:38px;font-size:16px}
+  #toasts{top:84px;bottom:auto}
+
   .fleetwrap{grid-template-columns:1fr}
   .cards{grid-template-columns:1fr 1fr}
   .upgrades{grid-template-columns:1fr}
+  .shiplist,.shiplist.tall{max-height:30vh}
+}
+
+/* ---- Sehr niedrige Höhe (Querformat-Handy): Sheet etwas höher ---- */
+@media(max-width:900px) and (max-height:480px){
+  #panel{height:64vh;bottom:50px}
+  #nav button span{font-size:16px}
+  #nav button{font-size:8px}
 }
