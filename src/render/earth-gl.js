@@ -61,7 +61,10 @@ void main() {
       vec2 duv = vec2((u - u_detRect.x) / (u_detRect.z - u_detRect.x),
                       (v - u_detRect.y) / (u_detRect.w - u_detRect.y));
       vec3 det = texture2D(u_detail, duv).rgb;
-      col = mix(col, det, u_detMix);
+      // weiche Ränder, damit kein hartes Rechteck sichtbar wird
+      float f = smoothstep(0.0, 0.14, duv.x) * smoothstep(1.0, 0.86, duv.x)
+              * smoothstep(0.0, 0.14, duv.y) * smoothstep(1.0, 0.86, duv.y);
+      col = mix(col, det, u_detMix * f);
     }
   }
   // Tag/Nacht

@@ -37,6 +37,9 @@ function startNewGame() {
 const canvas = document.getElementById('globe');
 const globe = new GlobeRenderer(canvas);
 
+// Esri-Attribution einblenden, sobald der WebGL-Globus aktiv ist
+if (globe.gl) { const cr = document.getElementById('earth-credit'); if (cr) cr.hidden = false; }
+
 // Layout an Bildschirmgröße koppeln (Globus auf Mobil in den oberen Bereich)
 const mq = window.matchMedia('(max-width: 820px)');
 const applyLayout = () => globe.setLayout(mq.matches);

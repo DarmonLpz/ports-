@@ -9,6 +9,7 @@ import { MASK, isLand } from '../data/world.js';
 import { PORTS } from '../data/ports.js';
 import { SHIP_CLASS_BY_ID } from '../data/ships.js';
 import { EarthGL } from './earth-gl.js';
+import { EarthTiles } from './earth-tiles.js';
 
 const TYPE_COLOR = {
   Container: '#5bd6ff', Bulker: '#f2c14e', Tanker: '#ff7a59', Gastanker: '#b388ff',
@@ -20,6 +21,9 @@ export class GlobeRenderer {
     this.canvas = canvas;                 // Hintergrund (#globe)
     this.gl = EarthGL.create(canvas);     // WebGL-Erde (oder null)
     this.ctx = this.gl ? null : canvas.getContext('2d');  // 2D nur im Fallback
+    this.tiles = this.gl ? new EarthTiles(this.gl.glContext()) : null;
+    this._detail = null;       // an earth-gl übergebene Detailtextur
+    this._detMix = 0;          // aktueller Crossfade-Wert
     this.fx = document.getElementById('globe-fx') || canvas;  // Overlay (Vektoren)
     this.fxctx = this.fx.getContext('2d');
     this.cam = { lon0: 10, lat0: 18, zoom: 1, targetZoom: 1, follow: null, autoRotate: true };
@@ -185,6 +189,22 @@ export class GlobeRenderer {
     // Sonnenvektor für Tag/Nacht
     const sφ = subsolar.lat * DEG, sλ = subsolar.lon * DEG;
     const sun = [Math.cos(sφ) * Math.cos(sλ), Math.cos(sφ) * Math.sin(sλ), Math.sin(sφ)];
+
+    // Deep-Zoom-Detail (Esri) ab Schwelle einblenden
+    const DEEP = 8;            // Zoom-Schwelle, ab der Tiles geladen werden
+    if (this.tiles) {
+      const want = this.cam.zoom > DEEP ? 1 : 0;
+      this._detMix += (want - this._detMix) * Math.min(1, dtMs / 400);  // Crossfade
+      if (this.cam.zoom > DEEP) {
+        const d = this.tiles.update(this.cam.lon0, this.cam.lat0, this.R * this.dpr,
+                                    this.canvas.width, this.canvas.height);
+        this._detail = d ? { tex: d.tex, rect: d.rect, mix: this._detMix } : null;
+      } else if (this._detMix < 0.01) {
+        this._detail = null;
+      } else if (this._detail) {
+        this._detail = { ...this._detail, mix: this._detMix };
+      }
+    }
 
     if (this.gl) {
       this.gl.render({
