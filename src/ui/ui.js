@@ -17,6 +17,7 @@ const STATUS = { idle: 'im Hafen', enroute: 'auf See', nofuel: 'Treibstoff leer!
 const TUTORIAL = [
   { icon: '🌍', title: 'Willkommen bei OCEANUM', body: 'Du leitest ein globales Handelsimperium. Im Zentrum dreht sich die Erde mit Tag-/Nacht-Zyklus – darauf siehst du alle Schiffe entlang exakter Seerouten fahren.' },
   { icon: '🖱️', title: 'Globus steuern', body: 'Ziehen dreht den Globus, das <b>Mausrad zoomt</b> stufenlos bis dicht an ein Schiff. Klicke einen Hafen oder ein Schiff an, um es auszuwählen. Mit <b>🎯</b> folgt die Kamera einem Schiff.' },
+  { icon: '⚓', title: 'Heimathafen & erstes Schiff', body: 'Du startest mit <b>30 Mio. $</b> und <b>ohne Schiffe</b> in deinem gewählten Heimathafen. Geh in die <b>Werft</b> und kaufe dein erstes Schiff – zum Beispiel einen günstigen <b>Feeder</b> oder <b>Mehrzweckfrachter</b>.' },
   { icon: '🚢', title: 'Handeln', body: 'Im Reiter <b>Flotte</b> wählst du ein Schiff im Hafen, <b>lädst</b> eine günstige Ware und wählst das <b>profitabelste Ziel</b>. Mit „Auslaufen“ startet die Reise – bei Ankunft wird automatisch verkauft.' },
   { icon: '⛽', title: 'Betrieb', body: 'Schiffe verbrauchen Treibstoff (am <b>Ölpreis</b> gekoppelt) und nutzen sich ab. <b>Bunkern</b>, <b>Reparieren</b> und <b>Upgrades</b> findest du in der Schiffsansicht.' },
   { icon: '🏗️', title: 'Märkte & Beteiligungen', body: 'In <b>Märkte</b> kaufst du Hafenanteile, baust Häfen aus und errichtest <b>Industrie- & Rohstoffkomplexe</b>, die Waren produzieren und Ertrag abwerfen.' },

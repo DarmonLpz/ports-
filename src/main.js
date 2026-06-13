@@ -4,14 +4,34 @@ import { GameState } from './engine/state.js';
 import { GlobeRenderer } from './render/globe.js';
 import { UI } from './ui/ui.js';
 import { loadManifest } from './render/assets.js';
-import { saveToStorage, loadFromStorage, clearSave, hasSave } from './engine/save.js';
+import { saveToStorage, loadFromStorage, clearSave } from './engine/save.js';
+import { PORTS_BY_ID } from './data/ports.js';
 
-let state = loadFromStorage() || newState();
+let state = loadFromStorage();
+const hadSave = !!state;
+if (!state) state = newState();   // temporär, bis Heimathafen gewählt ist
+
 function newState() {
   const s = new GameState();
   s.clock.speed = 0.6;     // Standard „1×“: ~40 Echtsekunden pro Spieltag
-  s.notify('Willkommen bei OCEANUM. Beginne mit deiner Startflotte in Hamburg, Rotterdam und Singapur.', 'info');
   return s;
+}
+
+// Zeigt die Heimathafen-Wahl und initialisiert das Spiel danach.
+function startNewGame() {
+  state = newState();
+  globe.resetView();
+  ui.setState(state);
+  ui.showHomePortPicker((portId) => {
+    state.homePortId = portId;
+    ui._yardPort = portId;
+    state.notify(`Heimathafen ${PORTS_BY_ID[portId].name} gewählt. Kaufe dein erstes Schiff in der Werft.`, 'info');
+    ui.renderTab();
+    // Tutorial erst nach der Heimathafen-Wahl zeigen (sofern noch nicht gesehen)
+    let tutDone = false;
+    try { tutDone = !!localStorage.getItem('oceanum_tut_done'); } catch {}
+    if (!tutDone) ui.showTutorial();
+  });
 }
 
 const canvas = document.getElementById('globe');
@@ -31,7 +51,7 @@ const app = {
     if (loaded) { state = loaded; globe.resetView(); ui.setState(state); ui._toast({ ok: true, msg: 'Spielstand geladen.' }); }
     else ui._toast({ ok: false, msg: 'Kein Spielstand vorhanden.' });
   },
-  onNew() { clearSave(); state = newState(); globe.resetView(); ui.setState(state); ui._toast({ ok: true, msg: 'Neues Spiel gestartet.' }); },
+  onNew() { clearSave(); startNewGame(); ui._toast({ ok: true, msg: 'Neues Spiel gestartet.' }); },
 };
 
 const ui = new UI(state, globe, document.getElementById('hud'), app);
@@ -39,10 +59,8 @@ const ui = new UI(state, globe, document.getElementById('hud'), app);
 // Echte Hafenfotos nachladen (Fallback: prozedurale Szenen)
 loadManifest().then(() => ui.renderTab());
 
-// Tutorial beim ersten Start
-let tutDone = false;
-try { tutDone = !!localStorage.getItem('oceanum_tut_done'); } catch {}
-if (!tutDone && !hasSave()) ui.showTutorial();
+// Ohne vorhandenen Spielstand: Heimathafen-Wahl zum Einstieg
+if (!hadSave) startNewGame();
 
 // Autosave alle 20 s und beim Schließen
 setInterval(() => saveToStorage(state), 20000);

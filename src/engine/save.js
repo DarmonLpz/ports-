@@ -44,7 +44,8 @@ export function snapshot(state) {
     };
   }
   return {
-    v: VERSION, seed: state.seed, cash: state.cash, lastDay: state.lastDay,
+    v: VERSION, seed: state.seed, homePortId: state.homePortId ?? null,
+    cash: state.cash, lastDay: state.lastDay,
     clock: { hours: state.clock.hours, speed: state.clock.speed, paused: state.clock.paused },
     economy: { oilPrice: state.economy.oilPrice, worldPrice: { ...state.economy.worldPrice },
       eventMult: { ...state.economy.eventMult }, regionBlock: { ...state.economy.regionBlock }, ports: eco },
@@ -62,6 +63,7 @@ export function snapshot(state) {
 export function restore(data) {
   const g = new GameState(data.seed);
   g.cash = data.cash; g.lastDay = data.lastDay;
+  g.homePortId = data.homePortId ?? (data.fleet?.ships?.[0]?.atPortId) ?? 'hamburg';
   Object.assign(g.clock, data.clock);
 
   g.economy.oilPrice = data.economy.oilPrice;
