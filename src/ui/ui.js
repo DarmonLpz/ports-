@@ -123,6 +123,8 @@ export class UI {
       case 'save': this._toast({ ok: this.app.onSave?.(), msg: this.app.onSave ? 'Spielstand gespeichert.' : '' }); break;
       case 'load': this.app.onLoad?.(); break;
       case 'newgame': if (confirm('Neues Spiel starten? Ungespeicherter Fortschritt geht verloren.')) this.app.onNew?.(); break;
+      case 'home-filter': this._homeFilter = el.dataset.r; this._renderHomePicker(); break;
+      case 'home-pick': this._pickHome(el.dataset.id); break;
       case 'tutorial': this.showTutorial(); break;
       case 'tut-next': this._tutStep(+el.dataset.dir); break;
       case 'tut-close': this._closeTutorial(); break;
@@ -135,6 +137,41 @@ export class UI {
     this.dest = {};
     this._openPortId = null;
     globalThis.requestAnimationFrame(() => { this.renderTab(); this.tickUI(performance.now()); });
+  }
+
+  // ---------- Heimathafen-Auswahl (Spielstart) ----------
+  showHomePortPicker(onPick) {
+    this._homePick = onPick;
+    this._homeFilter = 'all';
+    if (!this._homeEl) {
+      this._homeEl = document.createElement('div');
+      this._homeEl.id = 'homepicker';
+      this.root.appendChild(this._homeEl);
+    }
+    this._renderHomePicker();
+  }
+  _renderHomePicker() {
+    const regions = ['all', ...Object.keys(REGIONS)];
+    const filt = this._homeFilter;
+    const shown = PORTS.filter(p => filt === 'all' || p.region === filt);
+    const chips = regions.map(r =>
+      `<button data-act="home-filter" data-r="${r}" class="chip ${r===filt?'on':''}">${r==='all'?'Alle':REGIONS[r]}</button>`).join('');
+    const list = shown.map(p =>
+      `<button class="portrow" data-act="home-pick" data-id="${p.id}">
+        <b>${flagEmoji(p.country)} ${p.name}</b><small>${p.country} · ${REGIONS[p.region]}</small></button>`).join('');
+    this._homeEl.innerHTML = `<div class="home-card">
+      <div class="tut-emoji">⚓</div>
+      <h3>Wähle deinen Heimathafen</h3>
+      <p class="muted">Hier startest du dein Handelsimperium. Du beginnst mit 30 Mio. $ und ohne Schiffe –
+        kaufe dein erstes Schiff anschließend in der <b>Werft</b>.</p>
+      <div class="chips">${chips}</div>
+      <div class="home-list">${list}</div>
+    </div>`;
+  }
+  _pickHome(id) {
+    if (this._homeEl) { this._homeEl.remove(); this._homeEl = null; }
+    const cb = this._homePick; this._homePick = null;
+    cb?.(id);
   }
 
   // ---------- Tutorial ----------
