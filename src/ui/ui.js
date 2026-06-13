@@ -221,8 +221,10 @@ export class UI {
   _onGlobeSelect(sel) {
     if (sel.kind === 'ship' && sel.ref.owner === 'player') {
       this.activeShipId = sel.ref.id; this.tab = 'fleet';
+      this.globe.follow(sel.ref);          // Kamera hinspringen & verfolgen
     } else if (sel.kind === 'ship') {
       this.tab = 'fleet';
+      this.globe.follow(sel.ref);
     } else if (sel.kind === 'port') {
       this._openPort(sel.ref.id); return;
     }
@@ -231,9 +233,19 @@ export class UI {
 
   _openPort(id) { this.tab = 'ports'; this._openPortId = id; this._navHighlight(); this.renderTab(); }
 
+  // Liest den aktuell sichtbaren Wert eines Panel-Dropdowns (auch wenn der Spieler
+  // die Vorauswahl nie verändert hat – dann ist der onChange-State leer).
+  _selVal(act, id) {
+    const sel = id != null
+      ? this.root.querySelector(`#panel select[data-act="${act}"][data-id="${id}"]`)
+      : this.root.querySelector(`#panel select[data-act="${act}"]`);
+    return sel ? sel.value : null;
+  }
+
   _doLoad(el) {
     const ship = this._ship(el.dataset.id);
-    const pid = this._loadSel || el.dataset.pid;
+    const pid = this._selVal('loadsel') || this._loadSel || el.dataset.pid;
+    if (!pid) { this._toast({ ok: false, msg: 'Keine Ware verfügbar.' }); return; }
     const frac = +el.dataset.frac || 1;
     const max = Math.min(ship.capacity, this.state.economy.buyableTons(ship.atPortId, pid));
     this._toast(this.state.loadCargo(ship, ship.atPortId, pid, Math.floor(max * frac)));
@@ -241,23 +253,24 @@ export class UI {
   }
   _doSail(el) {
     const ship = this._ship(el.dataset.id);
-    const to = this.dest[ship.id] || el.dataset.to;
+    const to = this._selVal('destsel', ship.id) || this.dest[ship.id] || el.dataset.to;
     if (!to) { this._toast({ ok: false, msg: 'Kein Ziel gewählt.' }); return; }
     this._toast(this.state.sendShip(ship, to));
     this.renderTab();
   }
   _toggleLoop(el) {
     const ship = this._ship(el.dataset.id);
+    const dest = this._selVal('destsel', ship.id) || this.dest[ship.id];
     if (ship.autoLoop) { ship.autoLoop = null; this._toast({ ok: true, msg: 'Dauerschleife beendet.' }); }
-    else if (ship.cargo && ship.atPortId && this.dest[ship.id]) {
-      ship.autoLoop = { fromId: ship.atPortId, toId: this.dest[ship.id], pidOut: ship.cargo.pid, pidBack: null };
+    else if (ship.cargo && ship.atPortId && dest) {
+      ship.autoLoop = { fromId: ship.atPortId, toId: dest, pidOut: ship.cargo.pid, pidBack: null };
       this._toast({ ok: true, msg: 'Dauerschleife aktiv (Pendelverkehr).' });
     } else this._toast({ ok: false, msg: 'Erst laden & Ziel wählen.' });
     this.renderTab();
   }
   _doBuildComplex(el) {
     const portId = el.dataset.id;
-    const pid = this._cxSel || el.dataset.pid;
+    const pid = this._selVal('cxsel') || this._cxSel || el.dataset.pid;
     if (!pid) return;
     this._toast(this.state.buildComplex(portId, pid));
     this.renderTab();
