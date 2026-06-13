@@ -16,8 +16,10 @@ const TYPE_COLOR = {
 
 export class GlobeRenderer {
   constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.canvas = canvas;                 // Hintergrund (#globe) – Prozedural/WebGL
+    this.ctx = canvas.getContext('2d');   // wird in Task 6 durch WebGL ersetzt
+    this.fx = document.getElementById('globe-fx') || canvas;  // Overlay (Vektoren)
+    this.fxctx = this.fx.getContext('2d');
     this.cam = { lon0: 10, lat0: 18, zoom: 1, targetZoom: 1, follow: null, autoRotate: true };
     this.dpr = Math.min(2, window.devicePixelRatio || 1);
     this.centerYFrac = 0.5;   // vertikale Globusmitte (auf Mobil nach oben geschoben)
@@ -32,10 +34,11 @@ export class GlobeRenderer {
 
   _resize() {
     const r = this.canvas.getBoundingClientRect();
-    this.canvas.width = Math.max(1, r.width * this.dpr);
-    this.canvas.height = Math.max(1, r.height * this.dpr);
+    const w = Math.max(1, r.width * this.dpr), h = Math.max(1, r.height * this.dpr);
+    for (const c of [this.canvas, this.fx]) { c.width = w; c.height = h; }
     this.W = r.width; this.H = r.height;
     this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.fxctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
   }
 
   _buildLandPoints() {
@@ -75,7 +78,7 @@ export class GlobeRenderer {
 
   // ---- Eingabe: 1 Finger/Maus = drehen, 2 Finger = Pinch-Zoom, Wheel = Zoom ----
   _bindInput() {
-    const c = this.canvas;
+    const c = this.fx;
     this._ptrs = new Map();      // pointerId -> {x,y}
     this._moved = 0;
     this._pinchDist = 0;
@@ -143,7 +146,7 @@ export class GlobeRenderer {
   }
 
   _pick(clientX, clientY) {
-    const r = this.canvas.getBoundingClientRect();
+    const r = this.fx.getBoundingClientRect();
     const px = clientX - r.left, py = clientY - r.top;
     let best = null, bestD = 18 * 18;
     for (const s of this._ships ?? []) {
@@ -187,10 +190,13 @@ export class GlobeRenderer {
     this._drawOcean(ctx, sun);
     this._drawLand(ctx, sun);
     this._drawGraticule(ctx);
-    this._drawRoutes(ctx, state);
-    this._drawPorts(ctx);
-    this._drawShips(ctx, state);
     this._drawTerminatorGlow(ctx);
+
+    // Vektor-Overlay (immer Canvas2D)
+    this.fxctx.clearRect(0, 0, this.W, this.H);
+    this._drawRoutes(this.fxctx, state);
+    this._drawPorts(this.fxctx);
+    this._drawShips(this.fxctx, state);
   }
 
   _drawSpace(ctx) {
