@@ -12,6 +12,15 @@ und ohne externe Abhängigkeiten. Alle Grafiken werden prozedural erzeugt.
 
 ## Starten
 
+**Einfachster Weg (Doppelklick):**
+- **Windows:** `start.bat` doppelklicken
+- **macOS/Linux:** `./start.sh` ausführen
+
+Beide Skripte beenden zuerst eine evtl. noch laufende Instanz (geben Port 8080
+frei), starten dann den lokalen Server und öffnen den Browser automatisch.
+
+**Manuell:**
+
 ```bash
 node server.js          # http://localhost:8080
 # oder
