@@ -8,6 +8,7 @@ import { DEG, gcInterpolate as gcInterp } from '../engine/util.js';
 import { MASK, isLand } from '../data/world.js';
 import { PORTS } from '../data/ports.js';
 import { SHIP_CLASS_BY_ID } from '../data/ships.js';
+import { EarthGL } from './earth-gl.js';
 
 const TYPE_COLOR = {
   Container: '#5bd6ff', Bulker: '#f2c14e', Tanker: '#ff7a59', Gastanker: '#b388ff',
@@ -16,8 +17,9 @@ const TYPE_COLOR = {
 
 export class GlobeRenderer {
   constructor(canvas) {
-    this.canvas = canvas;                 // Hintergrund (#globe) – Prozedural/WebGL
-    this.ctx = canvas.getContext('2d');   // wird in Task 6 durch WebGL ersetzt
+    this.canvas = canvas;                 // Hintergrund (#globe)
+    this.gl = EarthGL.create(canvas);     // WebGL-Erde (oder null)
+    this.ctx = this.gl ? null : canvas.getContext('2d');  // 2D nur im Fallback
     this.fx = document.getElementById('globe-fx') || canvas;  // Overlay (Vektoren)
     this.fxctx = this.fx.getContext('2d');
     this.cam = { lon0: 10, lat0: 18, zoom: 1, targetZoom: 1, follow: null, autoRotate: true };
@@ -37,7 +39,7 @@ export class GlobeRenderer {
     const w = Math.max(1, r.width * this.dpr), h = Math.max(1, r.height * this.dpr);
     for (const c of [this.canvas, this.fx]) { c.width = w; c.height = h; }
     this.W = r.width; this.H = r.height;
-    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    if (this.ctx) this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     this.fxctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
   }
 
@@ -180,17 +182,25 @@ export class GlobeRenderer {
     }
     this.cam.lon0 = ((this.cam.lon0 + 180) % 360 + 360) % 360 - 180;
 
-    ctx.clearRect(0, 0, this.W, this.H);
-    this._drawSpace(ctx);
-
     // Sonnenvektor für Tag/Nacht
     const sφ = subsolar.lat * DEG, sλ = subsolar.lon * DEG;
     const sun = [Math.cos(sφ) * Math.cos(sλ), Math.cos(sφ) * Math.sin(sλ), Math.sin(sφ)];
 
-    this._drawOcean(ctx, sun);
-    this._drawLand(ctx, sun);
-    this._drawGraticule(ctx);
-    this._drawTerminatorGlow(ctx);
+    if (this.gl) {
+      this.gl.render({
+        resW: this.canvas.width, resH: this.canvas.height,
+        cx: this.cx * this.dpr, cy: this.cy * this.dpr, R: this.R * this.dpr,
+        lon0: this.cam.lon0 * DEG, lat0: this.cam.lat0 * DEG, sun,
+        detail: this._detail || null,
+      });
+    } else {
+      ctx.clearRect(0, 0, this.W, this.H);
+      this._drawSpace(ctx);
+      this._drawOcean(ctx, sun);
+      this._drawLand(ctx, sun);
+      this._drawGraticule(ctx);
+      this._drawTerminatorGlow(ctx);
+    }
 
     // Vektor-Overlay (immer Canvas2D)
     this.fxctx.clearRect(0, 0, this.W, this.H);
