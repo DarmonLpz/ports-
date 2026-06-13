@@ -251,8 +251,20 @@ export class UI {
       const evs = s.events.active.map(e => `${e.icon} ${e.title} (${e.daysLeft}T)`);
       tt.textContent = evs.length ? evs.join('   •   ') : 'Ruhige See – keine besonderen Ereignisse.';
     }
-    // aktives Panel selten neu rendern, um Interaktion nicht zu stören
-    if (now - this._lastFull > 1500) { this._lastFull = now; this.renderTab(); }
+    // aktives Panel selten neu rendern, um Interaktion nicht zu stören.
+    // Nicht neu rendern, solange der Spieler ein Bedienelement im Panel benutzt
+    // (offenes Dropdown / fokussiertes Eingabefeld) – sonst klappt z. B. die
+    // Frachtauswahl mitten im Aussuchen wieder zu.
+    if (now - this._lastFull > 1500 && !this._panelInteracting()) {
+      this._lastFull = now; this.renderTab();
+    }
+  }
+  _panelInteracting() {
+    const a = document.activeElement;
+    if (!a) return false;
+    const panel = this.root.querySelector('#panel');
+    if (!panel || !panel.contains(a)) return false;
+    return a.tagName === 'SELECT' || a.tagName === 'INPUT' || a.tagName === 'TEXTAREA';
   }
   _set(id, v) { const el = this.root.querySelector('#' + id); if (el) el.textContent = v; }
 
