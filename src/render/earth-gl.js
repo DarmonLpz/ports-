@@ -32,11 +32,15 @@ void main() {
   float Y = (u_center.y - py) / u_R;   // nach oben positiv
   float rho2 = X*X + Y*Y;
   if (rho2 > 1.0) {
-    // außerhalb der Kugel: Weltraum (sanfter blauer Verlauf) + Sterne
-    float star = fract(sin(dot(floor(gl_FragCoord.xy/1.5), vec2(12.9898,78.233))) * 43758.5453);
-    float s = step(0.997, star);
+    // außerhalb der Kugel: Weltraum (sanfter blauer Verlauf) + spärliche Sterne
     float vy = gl_FragCoord.y / u_res.y;
-    vec3 space = mix(vec3(0.03,0.05,0.10), vec3(0.06,0.08,0.14), vy) + s * vec3(0.85);
+    vec3 space = mix(vec3(0.025,0.04,0.085), vec3(0.045,0.06,0.11), vy);
+    // Sterne: gröberes Raster, deutlich seltener, variierende Helligkeit
+    vec2 cell = floor(gl_FragCoord.xy / 3.0);
+    float h  = fract(sin(dot(cell, vec2(12.9898, 78.233))) * 43758.5453);
+    float hb = fract(sin(dot(cell, vec2(39.346, 11.135))) * 24634.6345);
+    float s = step(0.9965, h) * (0.2 + 0.8 * hb);
+    space += s * vec3(0.85, 0.88, 0.95);
     // weicher Atmosphären-Ring knapp außerhalb R
     float rr = sqrt(rho2);
     float rim = smoothstep(1.0, 0.985, rr) * smoothstep(1.12, 1.0, rr);
