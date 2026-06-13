@@ -581,7 +581,7 @@ export class UI {
 
   _yard() {
     const s = this.state;
-    const yp = this._yardPort || 'hamburg';
+    const yp = this._yardPort || s.homePortId || 'hamburg';
     const cards = SHIP_CLASSES.map(c=>{
       const afford = s.cash >= c.price;
       return `<div class="yardcard">

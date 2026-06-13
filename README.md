@@ -7,8 +7,10 @@ exakter **Großkreisrouten** dargestellt werden. Du baust ein globales
 Handelsimperium aus Flotte, Hafenanteilen, Industrie- und Rohstoffkomplexen und
 einem Börsenportfolio auf.
 
-Komplett in **Vanilla JavaScript (ES-Module) + Canvas/SVG**, ohne Build-Schritt
-und ohne externe Abhängigkeiten. Alle Grafiken werden prozedural erzeugt.
+Komplett in **Vanilla JavaScript (ES-Module) + Canvas/WebGL/SVG**, ohne
+Build-Schritt und ohne npm-Abhängigkeiten. Die Erde nutzt eine gebündelte
+Blue-Marble-Textur (WebGL) mit optionalem Online-Satelliten-Deep-Zoom; alle
+übrigen Grafiken (Häfen, Schiffe, UI) werden prozedural erzeugt.
 
 ## Starten
 
@@ -52,11 +54,12 @@ werden, nicht per `file://`.)
 | **Beteiligungen** | Hafenanteile kaufen & Häfen ausbauen; Industrie- und Rohstoffabbau-Komplexe errichten & ausbauen (speisen ihren Ausstoß in die Marktpreise ein) |
 | **Ereignisse** | Kriege, Sanktionen, Epidemien, Ölpreisschocks, Booms, Rezessionen, Piraterie, Kanalsperren, Streiks, Miss-/Rekordernten — mit Preis- & Routenwirkung |
 | **Schiffsbetrieb** | Treibstoff/Bunkern an einen simulierten **Ölpreis** gekoppelt, **Verschleiß & Reparatur**, **Upgrades** (Sparmotor, Wulstbug, Rumpfbeschichtung, Laderaum, Scrubber, Automatisierung) |
-| **Progression** | Start mit 75 Mio. $ und 3 Schiffen; Wachstum über Handelsmargen, Dividenden, Komplex-Erträge und Übernahmen |
+| **Progression** | Start mit **30 Mio. $**, **ohne Schiffe** und einem frei gewählten **Heimathafen**; das erste Schiff kaufst du in der Werft. Wachstum über Handelsmargen, Dividenden, Komplex-Erträge und Übernahmen |
 
 ## Spielablauf in Kürze
 
-1. **Flotte** → ein Schiff wählen, im Heimathafen eine günstige Ware **laden**.
+0. Beim ersten Start **Heimathafen wählen** und in der **Werft** ein erstes (günstiges) Schiff kaufen.
+1. **Flotte** → ein Schiff wählen, im Hafen eine günstige Ware **laden**.
 2. Bestes **Ziel** wählen (Gewinn-Schätzung inkl. Treibstoff & Fixkosten) und
    **auslaufen**. Optional **Dauerschleife** für Pendelverkehr.
 3. Auf dem Globus zusehen, wie das Schiff der Route folgt — heranzoomen mit 🎯.
@@ -98,16 +101,29 @@ src/
   engine/    state.js (Orchestrierung), time.js (Uhr/Sonnenstand),
              economy.js, events.js, fleet.js (Routing/Treibstoff/Verschleiß),
              market.js (Börse/Übernahmen), assets.js (Beteiligungen), util.js
-  render/    globe.js (Orthographie-Globus, Tag/Nacht, Zoom, Schiffe),
+  render/    globe.js (Orthographie-Globus: WebGL-Erde + Vektor-Overlay, Zoom, Schiffe),
+             earth-gl.js (WebGL-Sphere: Blue-Marble-Textur, Tag/Nacht, Sterne),
+             earth-tiles.js (Esri-Satelliten-Deep-Zoom, online),
              shipart.js (Schiff-Seitenprofile), portart.js (Hafenszenen)
+assets/
+  earth/     bluemarble-8k.jpg (gebündelte NASA-Blue-Marble-Basistextur)
   ui/        ui.js (Panels, Steuerung)
   main.js    Render-/Simulationsschleife
 ```
 
-## Hinweis zu den Grafiken
+## Die Erde: WebGL-Globus mit Deep-Zoom
 
-Es werden bewusst **prozedurale** Canvas-/SVG-Grafiken statt Fotos verwendet, damit
-das Spiel komplett offline, ohne Assets und ohne Build läuft. Die Erde ist als
-beleuchteter, gepunkteter Globus mit Tag/Nacht-Terminator umgesetzt; Schiffe
-erscheinen je nach Zoom als Punkt, Silhouette mit Kielwasser oder Detailmodell
-mit Namensschild.
+Der Globus ist eine **texturierte WebGL-Kugel** in orthographischer Projektion:
+- **Basis (offline):** eine gebündelte NASA-**Blue-Marble**-Textur
+  (`assets/earth/bluemarble-8k.jpg`) mit prozedural berechnetem
+  **Tag/Nacht-Terminator** und Sternenhimmel.
+- **Deep-Zoom (online):** Beim starken Reinzoomen werden echte
+  **Esri-World-Imagery**-Satellitenkacheln nachgeladen und weich über die Basis
+  geblendet – bis auf Stadt-/Hafenebene. Ohne Internet bleibt die Blue-Marble-Basis
+  sichtbar (kein Bruch). Attribution: *Esri, Maxar, Earthstar Geographics*.
+- **Fallback:** Steht kein WebGL zur Verfügung, rendert ein prozeduraler,
+  gepunkteter Canvas2D-Globus als Rückfallebene.
+
+Häfen, Seerouten und Schiffe liegen als **Canvas2D-Overlay** darüber; Schiffe
+erscheinen je nach Zoom als Punkt, Silhouette mit Kielwasser oder Detailmodell mit
+Namensschild. Hafenszenen und Schiffsprofile bleiben prozedurale SVG-Grafiken.
