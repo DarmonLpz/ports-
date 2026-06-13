@@ -35,10 +35,46 @@ export class UI {
     this.activeShipId = null;
     this.portRegionFilter = 'all';
     this.dest = {};            // shipId -> Zielhafen-Auswahl
+    this.settings = this._loadSettings();
+    this._applySettings();
     this._build();
     globe.onSelect = (sel) => this._onGlobeSelect(sel);
     this._lastFull = 0;
   }
+
+  // ---------- Einstellungen ----------
+  _loadSettings() {
+    const def = { dayNight: true, deepZoom: true, autoRotate: true };
+    try { return { ...def, ...JSON.parse(localStorage.getItem('oceanum_settings') || '{}') }; }
+    catch { return def; }
+  }
+  _applySettings() {
+    this.globe.dayNight = this.settings.dayNight;
+    this.globe.deepZoom = this.settings.deepZoom;
+    this.globe.autoRotateEnabled = this.settings.autoRotate;
+  }
+  _saveSettings() { try { localStorage.setItem('oceanum_settings', JSON.stringify(this.settings)); } catch {} }
+  showSettings() {
+    if (!this._setEl) { this._setEl = document.createElement('div'); this._setEl.id = 'settings'; this.root.appendChild(this._setEl); }
+    this._renderSettings();
+  }
+  _renderSettings() {
+    const S = this.settings;
+    const row = (key, label, hint) => `<button class="set-row" data-act="set-toggle" data-key="${key}">
+      <div><b>${label}</b><small>${hint}</small></div>
+      <span class="toggle ${S[key] ? 'on' : ''}">${S[key] ? 'AN' : 'AUS'}</span></button>`;
+    this._setEl.innerHTML = `<div class="set-card">
+      <div class="set-head"><h3>⚙️ Einstellungen</h3><button data-act="settings-close" class="set-x" title="Schließen">✕</button></div>
+      ${row('dayNight', 'Tag-/Nacht-Beleuchtung', 'Terminator & dunkle Nachtseite auf dem Globus')}
+      ${row('deepZoom', 'Satelliten-Detail (online)', 'Echte Esri-Satellitenbilder beim Nah-Zoom')}
+      ${row('autoRotate', 'Automatische Erddrehung', 'Globus dreht sich langsam von selbst')}
+    </div>`;
+  }
+  _toggleSetting(key) {
+    this.settings[key] = !this.settings[key];
+    this._applySettings(); this._saveSettings(); this._renderSettings();
+  }
+  _closeSettings() { if (this._setEl) { this._setEl.remove(); this._setEl = null; } }
 
   _build() {
     this.root.innerHTML = `
@@ -51,6 +87,7 @@ export class UI {
         <div class="spacer"></div>
         <div class="menu">
           <button data-act="tutorial" title="Tutorial">❓</button>
+          <button data-act="settings" title="Einstellungen">⚙️</button>
           <button data-act="save" title="Speichern">💾</button>
           <button data-act="load" title="Laden">📂</button>
           <button data-act="newgame" title="Neues Spiel">🆕</button>
@@ -126,6 +163,9 @@ export class UI {
       case 'newgame': if (confirm('Neues Spiel starten? Ungespeicherter Fortschritt geht verloren.')) this.app.onNew?.(); break;
       case 'home-filter': this._homeFilter = el.dataset.r; this._renderHomePicker(); break;
       case 'home-pick': this._pickHome(el.dataset.id); break;
+      case 'settings': this.showSettings(); break;
+      case 'set-toggle': this._toggleSetting(el.dataset.key); break;
+      case 'settings-close': this._closeSettings(); break;
       case 'tutorial': this.showTutorial(); break;
       case 'tut-next': this._tutStep(+el.dataset.dir); break;
       case 'tut-close': this._closeTutorial(); break;

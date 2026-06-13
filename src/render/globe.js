@@ -24,6 +24,9 @@ export class GlobeRenderer {
     this.tiles = this.gl ? new EarthTiles(this.gl.glContext()) : null;
     this._detail = null;       // an earth-gl übergebene Detailtextur
     this._detMix = 0;          // aktueller Crossfade-Wert
+    this.dayNight = true;      // Tag/Nacht-Beleuchtung (über Einstellungen schaltbar)
+    this.deepZoom = true;      // Esri-Satelliten-Detail beim Nah-Zoom
+    this.autoRotateEnabled = true;  // automatische Erddrehung erlaubt
     this.fx = document.getElementById('globe-fx') || canvas;  // Overlay (Vektoren)
     this.fxctx = this.fx.getContext('2d');
     this.cam = { lon0: 10, lat0: 18, zoom: 1, targetZoom: 1, follow: null, autoRotate: true };
@@ -181,7 +184,7 @@ export class GlobeRenderer {
       this.cam.lon0 += (((this.cam.follow.lon ?? this.cam.follow.pos?.lon) - this.cam.lon0 + 540) % 360 - 180) * 0.12;
       const tlat = this.cam.follow.lat ?? this.cam.follow.pos?.lat;
       this.cam.lat0 += (tlat - this.cam.lat0) * 0.12;
-    } else if (this.cam.autoRotate) {
+    } else if (this.cam.autoRotate && this.autoRotateEnabled) {
       this.cam.lon0 += dtMs * 0.0016;
     }
     this.cam.lon0 = ((this.cam.lon0 + 180) % 360 + 360) % 360 - 180;
@@ -192,7 +195,7 @@ export class GlobeRenderer {
 
     // Deep-Zoom-Detail (Esri) ab Schwelle einblenden
     const DEEP = 8;            // Zoom-Schwelle, ab der Tiles geladen werden
-    if (this.tiles) {
+    if (this.tiles && this.deepZoom) {
       const want = this.cam.zoom > DEEP ? 1 : 0;
       this._detMix += (want - this._detMix) * Math.min(1, dtMs / 400);  // Crossfade
       if (this.cam.zoom > DEEP) {
@@ -204,6 +207,8 @@ export class GlobeRenderer {
       } else if (this._detail) {
         this._detail = { ...this._detail, mix: this._detMix };
       }
+    } else if (this._detail || this._detMix) {
+      this._detail = null; this._detMix = 0;   // Deep-Zoom deaktiviert
     }
 
     if (this.gl) {
@@ -211,9 +216,9 @@ export class GlobeRenderer {
         resW: this.canvas.width, resH: this.canvas.height,
         cx: this.cx * this.dpr, cy: this.cy * this.dpr, R: this.R * this.dpr,
         lon0: this.cam.lon0 * DEG, lat0: this.cam.lat0 * DEG, sun,
-        detail: this._detail || null,
+        detail: this._detail || null, night: this.dayNight,
       });
-    } else {
+    } else if (ctx) {
       ctx.clearRect(0, 0, this.W, this.H);
       this._drawSpace(ctx);
       this._drawOcean(ctx, sun);

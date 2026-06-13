@@ -252,3 +252,19 @@ button.mini{padding:4px 8px;border-radius:7px;border:1px solid var(--line);backg
 .home-card h3{margin:6px 0 4px}
 .home-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
 @media(max-width:560px){.home-list{grid-template-columns:1fr}}
+
+/* Einstellungs-Overlay */
+#settings{position:fixed;inset:0;z-index:60;display:grid;place-items:center;
+  background:rgba(3,8,18,0.72);backdrop-filter:blur(3px)}
+.set-card{width:min(440px,92vw);background:#0c1726;border:1px solid rgba(120,180,255,0.18);
+  border-radius:14px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.set-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.set-head h3{margin:0}
+.set-x{background:transparent;border:0;color:var(--muted);font-size:18px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  text-align:left;background:rgba(16,28,46,0.7);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;margin-top:8px;color:var(--txt)}
+.set-row small{display:block;color:var(--muted);margin-top:2px}
+.set-row .toggle{flex:none;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;
+  background:rgba(255,107,107,0.18);color:#ff9a9a}
+.set-row .toggle.on{background:rgba(94,255,165,0.18);color:#5effa5}

@@ -20,6 +20,7 @@ uniform sampler2D u_base;   // Blue-Marble (equirect)
 uniform sampler2D u_detail; // Detailtextur (Esri), in equirect-UV vorgerendert
 uniform vec4  u_detRect;    // Detail-Bounds als UV: (u0, v0, u1, v1); leer wenn u1<=u0
 uniform float u_detMix;     // Blend-Stärke 0..1
+uniform float u_night;      // 1 = Tag/Nacht-Beleuchtung, 0 = gleichmäßiger Tag
 
 const float PI = 3.14159265358979;
 
@@ -31,14 +32,15 @@ void main() {
   float Y = (u_center.y - py) / u_R;   // nach oben positiv
   float rho2 = X*X + Y*Y;
   if (rho2 > 1.0) {
-    // außerhalb der Kugel: Weltraum + Sterne
+    // außerhalb der Kugel: Weltraum (sanfter blauer Verlauf) + Sterne
     float star = fract(sin(dot(floor(gl_FragCoord.xy/1.5), vec2(12.9898,78.233))) * 43758.5453);
     float s = step(0.997, star);
-    vec3 space = vec3(0.012, 0.024, 0.06) + s * vec3(0.8);
+    float vy = gl_FragCoord.y / u_res.y;
+    vec3 space = mix(vec3(0.03,0.05,0.10), vec3(0.06,0.08,0.14), vy) + s * vec3(0.85);
     // weicher Atmosphären-Ring knapp außerhalb R
     float rr = sqrt(rho2);
-    float rim = smoothstep(1.0, 0.985, rr) * smoothstep(1.10, 1.0, rr);
-    space += rim * vec3(0.35, 0.66, 1.0) * 0.6;
+    float rim = smoothstep(1.0, 0.985, rr) * smoothstep(1.12, 1.0, rr);
+    space += rim * vec3(0.35, 0.66, 1.0) * 0.7;
     gl_FragColor = vec4(space, 1.0);
     return;
   }
@@ -67,14 +69,16 @@ void main() {
       col = mix(col, det, u_detMix * f);
     }
   }
-  // Tag/Nacht
+  // Tag/Nacht (abschaltbar über u_night)
   vec3 n = vec3(cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat));
   float l = dot(n, u_sun);                 // -1..1
   float day = smoothstep(-0.12, 0.18, l);
-  vec3 night = col * 0.10 + vec3(0.01, 0.02, 0.04);
-  col = mix(night, col * (0.55 + 0.6 * day), day);
+  vec3 night = col * 0.12 + vec3(0.012, 0.022, 0.045);
+  vec3 dn = mix(night, col * (0.6 + 0.6 * day), day);   // mit Tag/Nacht
+  vec3 evenDay = col * 1.02;                             // gleichmäßiger Tag
+  col = mix(evenDay, dn, u_night);
   // Randverdunklung
-  col *= mix(1.0, 0.78, smoothstep(0.7, 1.0, rho));
+  col *= mix(1.0, 0.82, smoothstep(0.7, 1.0, rho));
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -114,7 +118,7 @@ export class EarthGL {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
     this.aPos = gl.getAttribLocation(prog, 'a_pos');
     this.u = {};
-    for (const name of ['u_res','u_center','u_R','u_lon0','u_lat0','u_sun','u_base','u_detail','u_detRect','u_detMix'])
+    for (const name of ['u_res','u_center','u_R','u_lon0','u_lat0','u_sun','u_base','u_detail','u_detRect','u_detMix','u_night'])
       this.u[name] = gl.getUniformLocation(prog, name);
     // Platzhalter-Texturen (1x1), bis das Bild geladen ist
     this.baseTex = this._tex1(gl, [9, 26, 48]);
@@ -162,8 +166,8 @@ export class EarthGL {
 
   glContext() { return this.gl; }
 
-  // detail: {tex, rect:[u0,v0,u1,v1], mix} oder null
-  render({ resW, resH, cx, cy, R, lon0, lat0, sun, detail }) {
+  // detail: {tex, rect:[u0,v0,u1,v1], mix} oder null; night: bool (Tag/Nacht an)
+  render({ resW, resH, cx, cy, R, lon0, lat0, sun, detail, night = true }) {
     const gl = this.gl;
     gl.viewport(0, 0, resW, resH);
     gl.useProgram(this.prog);
@@ -184,6 +188,7 @@ export class EarthGL {
     const r = detail?.rect || [0, 0, 0, 0];
     gl.uniform4f(this.u.u_detRect, r[0], r[1], r[2], r[3]);
     gl.uniform1f(this.u.u_detMix, detail?.mix ?? 0);
+    gl.uniform1f(this.u.u_night, night ? 1 : 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 }
