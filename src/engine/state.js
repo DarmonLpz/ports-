@@ -25,12 +25,11 @@ export class GameState {
     this.market = new Market(this.economy, this.rng);
     this.assets = new AssetManager();
 
-    this.cash = 75_000_000;
+    this.cash = 30_000_000;
+    this.homePortId = null;   // wird bei „Neues Spiel“ über die Heimathafen-Wahl gesetzt
     this.netWorthHistory = [];
     this.notifications = [];
     this.lastDay = 0;
-
-    this.fleet.giveStarterFleet('player');
   }
 
   notify(msg, kind = 'info') {
@@ -116,6 +115,7 @@ export class GameState {
   }
 
   buyShip(classId, atPortId) {
+    atPortId = atPortId || this.homePortId || 'hamburg';
     const cls = SHIP_CLASS_BY_ID[classId];
     if (!cls) return { ok: false, msg: 'Unbekannte Schiffsklasse.' };
     if (cls.price > this.cash) return { ok: false, msg: 'Nicht genug Kapital.' };
